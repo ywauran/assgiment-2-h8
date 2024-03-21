@@ -2,6 +2,10 @@ package errs
 
 import "net/http"
 
+type NotFound struct {
+    message string
+}
+
 type Error interface {
 	Message() string
 	Status() int
@@ -25,6 +29,11 @@ func (e *ErrorData) Status() int {
 func (e *ErrorData) Error() string {
 	return e.ErrError
 }
+
+func (e *NotFound) Error() string {
+    return e.message
+}
+
 
 func NewUnauthorizedError(message string) Error {
 	return &ErrorData{
@@ -73,3 +82,4 @@ func NewUnprocessibleEntityError(message string) Error {
 		ErrError:   "INVALID_REQUEST_BODY",
 	}
 }
+

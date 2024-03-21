@@ -16,6 +16,18 @@ func NewRepository(db *sql.DB) order_repository.Repository {
 	return &orderPG{db: db}
 }
 
+func (orderPG *orderPG) DeleteById(orderId int) errs.Error {
+    _, execErr := orderPG.db.Exec(deleteItemById, orderId)
+	
+    if execErr != nil {
+        return errs.NewInternalServerError("failed to delete order items")
+    }
+    return nil
+}
+
+
+
+
 func (orderPG *orderPG) ReadOrderById(orderId int) (*entity.Order, errs.Error) {
 	row := orderPG.db.QueryRow(getOrderById, orderId)
 

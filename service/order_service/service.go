@@ -19,6 +19,7 @@ type Service interface {
 	CreateOrderWithItems(newOrderRequest dto.NewOrderRequestDto) (*dto.NewOrderResponseDto, errs.Error)
 	GetOrders() (*dto.GetOrdersResponseDto, errs.Error)
 	UpdateOrder(orderId int, newOrderRequest dto.NewOrderRequestDto) (*dto.NewOrderResponseDto, errs.Error)
+	DeleteOrder(orderId int) errs.Error
 }
 
 func NewService(orderRepo order_repository.Repository, itemRepo item_repository.Repository) Service {
@@ -26,6 +27,20 @@ func NewService(orderRepo order_repository.Repository, itemRepo item_repository.
 		OrderRepo: orderRepo,
 		ItemRepo:  itemRepo,
 	}
+}
+
+func (os *orderService) DeleteOrder(orderId int) errs.Error {
+    _, err := os.OrderRepo.ReadOrderById(orderId)
+    if err != nil {
+        return err
+    }
+
+    err = os.OrderRepo.DeleteById(orderId)
+    if err != nil {
+        return err
+    }
+
+    return nil
 }
 
 func (os *orderService) UpdateOrder(orderId int, newOrderRequest dto.NewOrderRequestDto) (*dto.NewOrderResponseDto, errs.Error) {
@@ -189,3 +204,4 @@ func (os *orderService) CreateOrderWithItems(newOrderRequest dto.NewOrderRequest
 	return &response, nil
 
 }
+
